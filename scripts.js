@@ -1,5 +1,3 @@
-// import axios from 'axios';
-
 const loadBtn = document.querySelector(".js-load");
 const resultsContainer = document.querySelector(".js-results");
 const searchInput = document.querySelector(".js-input");
@@ -9,7 +7,14 @@ loadBtn.addEventListener("click", function (evt) {
   const searchValue = searchInput.value.trim().toLowerCase();
 
   fetch(`https://api.github.com/users/${searchValue}`)
-    .then((response) => response.json())
+
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(response.statusText);
+      }
+    })
     .then((data) => (resultsContainer.innerHTML =
         `<div class="response-container">
           <img src="${data.avatar_url}" alt="avatar">
@@ -18,11 +23,6 @@ loadBtn.addEventListener("click", function (evt) {
           <p> Кол-во репозиториев: <span>${data.public_repos}</span><p>
         </div>`)
     )
+    .catch((error) => {
+      console.error(error.message);})
 });
-
-// loadBtn2.addEventListener("click", function (evt) {
-//   evt.preventDefault();
-//
-//   // axios.get('https://api.github.com/users/VshivcevA')
-//   //   .then(console.log(1))
-// });
